@@ -13,7 +13,9 @@
 
 #--------------------------------------------------------------
 saldo = 0
-extrato = []
+##Não tinha pensado em colocar uma string longa para o extrato:
+#extrato = []
+extrato = "" #'Tutor
 opcao = "S"
 contador = 0
 
@@ -35,7 +37,7 @@ while opcao != "x" :
 
     if opcao == "s":
         if contador < 3:
-            valor_saque = int(input("Informe o valor que deseja ser sacado:"))
+            valor_saque = float(input("Informe o valor que deseja ser sacado:")) #'Tutor - como é dinheiro, colocar como float
 
             if valor_saque > 0:
                 if valor_saque > 500 and valor_saque < saldo:
@@ -48,25 +50,29 @@ while opcao != "x" :
                     saldo -= valor_saque
                     print(f"O valor de R${valor_saque} foi retirado da conta com sucesso!")
                     contador +=1
-                    extrato += f"Saque - R$ {valor_saque:.2f}\n "
+                    extrato += f"Saque - R$ {valor_saque:.2f}\n " #'Tutor - ":.2f" para deixar o valor formatado
             else:
                 print("Valor inválido, tente novamente!")
         else:
             print("Número máximo de saques por dia atingido, por favor tente novamente amanhã. ")
     
     elif opcao == "d":
-        valor_deposito = int(input("Informe o valor a ser depositado:"))
+        valor_deposito = float(input("Informe o valor a ser depositado:")) #'Tutor - como é dinheiro, colocar como float
 
         if valor_deposito > 0:
             saldo += valor_deposito
             print(f"O valor de R${valor_deposito} foi depositado na conta com sucesso!")
-            extrato += f"Deposito - R$ {valor_deposito:}\n "
+            extrato += f"Deposito - R$ {valor_deposito:.2f}\n " #'Tutor
         
         else:
             print("Valor inválido, tente novamente!")
 
-#    elif opcao == "e":  
-
+    elif opcao == "e":  #'Tutor - não tinha pensado em usar string para o extrato {
+        print("\n ===================================")
+        print("Extrato da conta bancária:")
+        print("Não foram realizadas movimentações na conta." if not extrato else extrato) #@ Esse if serve para verificar se extrato está vazio (se tiver mostra a frase se não mostra extrato )
+        print(f"\nSaldo da conta: R$ {saldo:.2f}")
+        print("===================================\n") #'Tutor }
 
     elif opcao == "x":
         print("Obrigado por usar nosso sistema. Até a proxima!")
