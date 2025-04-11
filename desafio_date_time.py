@@ -10,27 +10,37 @@
 from datetime import datetime
 
 saldo = 0
-extrato = ""
+extrato_conta = []
 opcao = "E"
-contador_saque = 0
-transasao_dia = 0
+transacao_dia = 0
 
+def contador_transacao():
+    global extrato_conta
+    global transacao_dia
+    hoje = datetime.now().strftime("%d/%m/%Y")
+    aux=0
+
+    for item in extrato_conta:     #@ vai varrer a lista e manter só as datas para leitura e comparação
+        data_movimentacao = item.split(" ")[0]  #@ como a data está seguida de um espaço ele está compiando até o primeiro espaço
+        if data_movimentacao == hoje:
+            aux += 1 #% acho que isso aqui dava para ser simplificado 
+    transacao_dia = aux
 
 def deposito(valor_deposito):
     global saldo
-    global extrato
+    global extrato_conta
 
     if valor_deposito > 0:
         saldo += valor_deposito
-        extrato += f"Deposito - R$ {valor_deposito:.2f} em {data_trasacao}\n "
+        extrato_conta.append(f"{data_trasacao} - Deposito - R$ {valor_deposito:.2f} ")
         print(f"O valor de R${valor_deposito} foi depositado na conta com sucesso!")
+        contador_transacao()
     else:
         print("Valor inválido, tente novamente!")
 
 def saque(valor_saque):
     global saldo
-    global extrato
-    global contador_saque
+    global extrato_conta
 
     if valor_saque > 0:
         if valor_saque > 500 and valor_saque < saldo:
@@ -42,22 +52,25 @@ def saque(valor_saque):
         else:
             saldo -= valor_saque
             msg = f"O valor de R${valor_saque} foi retirado da conta com sucesso!"
-            contador_saque +=1
-            extrato += f"Saque - R$ {valor_saque:.2f} em {data_trasacao}\n "
+            extrato_conta.append(f"{data_trasacao} -  Saque   - R$ {valor_saque:.2f}")
+            contador_transacao()
     else:
         msg = "Valor inválido, tente novamente!"
     return print(msg)
 
-#Vai precisar transformar esse extrato em um novo objeto, talvez lista 
-def estrato():
-        print("\n ===================================")
-        print("Extrato da conta bancária:")
-        print("Não foram realizadas movimentações na conta." if not extrato else extrato) #@ Esse if serve para verificar se extrato está vazio (se tiver mostra a frase se não mostra extrato )
-        print(f"\nSaldo da conta: R$ {saldo:.2f}")
-        print("===================================\n")
+def extrato():
+    global extrato_conta
 
-#def contador_transacao():
-
+    if not extrato_conta:
+        print("Não foram realizadas movimentações na conta." )
+    else:
+        print("\n---------------------------------------------")
+        print("     Extrato da conta bancária:\n")
+        print("  Data         Hora       Tipo        Valor")
+        for movimentacao in extrato_conta:
+            print(movimentacao)
+        print(f"\n         Saldo da conta: R$ {saldo:.2f}")
+        print("---------------------------------------------")
 
 while opcao != "x" :
     opcao = input (""" 
@@ -74,20 +87,20 @@ while opcao != "x" :
     opcao = opcao.lower()
     data_trasacao = datetime.now().strftime("%d/%m/%Y - %H:%M:%S")
 
-    if opcao == "s" and transasao_dia < 10:
-        if contador_saque < 3:
-            saque(float(input("Informe o valor que deseja ser sacado:")))
-        else:
-            print("Número máximo de saques por dia atingido, por favor tente novamente amanhã. ")
+    if opcao == "s" and transacao_dia <10 :
+        saque(float(input("Informe o valor que deseja ser sacado:")))
     
-    elif opcao == "d" and transasao_dia < 10:
+    elif opcao == "d" and transacao_dia <10 :
         deposito(float(input("Informe o valor a ser depositado:")))
 
     elif opcao == "e":
-        estrato()
+        extrato()
 
     elif opcao == "x":
         print("Obrigado por usar nosso sistema. Até a proxima!")
         break
+
+    elif transacao_dia >= 10:
+        print("Número máximo de transações por dia atingido, por favor tente novamente amanhã. ")
 
     else: print("Opção inválida! Por favor tente novamente.")
